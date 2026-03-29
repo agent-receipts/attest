@@ -37,6 +37,19 @@ src/
 - All changes go through pull requests — never push directly to main
 - Always request review from `Copilot` when creating a PR (use the API: `gh api repos/{owner}/{repo}/pulls/{number}/requested_reviewers -X POST --input -` with `{"reviewers":["Copilot"]}`; the `--reviewer` flag on `gh pr create` doesn't support bot reviewers)
 
+## Self-review before push
+
+Re-read every changed file with fresh eyes before committing. Check for:
+
+- **Input validation**: empty strings, missing fields, unexpected types, duplicates
+- **Resource cleanup**: streams, readers, DB connections, event listeners, timers
+- **Unbounded growth**: maps/arrays that grow per-request without cleanup or caps
+- **Security**: string interpolation in SQL/commands, unsanitized user input
+- **Guard rails**: double-init, double-attach, use-after-close
+- **Test gaps**: is there a test for the error/edge path, not just the happy path?
+
+Fix issues and amend the commit — don't push a separate "fix review feedback" commit.
+
 ## Code conventions
 
 - Use `import type` for type-only imports (enforced by `verbatimModuleSyntax`)
