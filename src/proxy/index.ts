@@ -1,4 +1,10 @@
 export {
+	type InterceptorEvents,
+	type ToolCallComplete,
+	ToolCallInterceptor,
+	type ToolCallRequest,
+} from "./interceptor.js";
+export {
 	type JsonRpcMessage,
 	McpProxy,
 	type McpProxyEvents,
