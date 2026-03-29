@@ -6,7 +6,8 @@
 	"author": "Otto Jongerius",
 	"type": "module",
 	"bin": {
-		"attest": "dist/cli/main.js"
+		"attest": "dist/cli/main.js",
+		"attest-proxy": "dist/proxy/main.js"
 	},
 	"scripts": {
 		"build": "tsc",
