@@ -1,3 +1,4 @@
+export { type EmitterConfig, ReceiptEmitter } from "./emitter.js";
 export {
 	type InterceptorEvents,
 	type ToolCallComplete,
