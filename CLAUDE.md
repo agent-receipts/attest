@@ -35,7 +35,7 @@ src/
 ## Workflow
 
 - All changes go through pull requests — never push directly to main
-- Always request review from `@copilot` when creating a PR
+- Always request review from `Copilot` when creating a PR (use the API: `gh api repos/{owner}/{repo}/pulls/{number}/requested_reviewers -X POST --input -` with `{"reviewers":["Copilot"]}`; the `--reviewer` flag on `gh pr create` doesn't support bot reviewers)
 
 ## Code conventions
 
