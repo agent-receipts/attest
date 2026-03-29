@@ -2,7 +2,7 @@ export {
 	ALL_ACTIONS,
 	FILESYSTEM_ACTIONS,
 	getActionType,
-	getDefaultRiskLevel,
+	resolveActionType,
 	SYSTEM_ACTIONS,
 	UNKNOWN_ACTION,
 } from "./actions.js";

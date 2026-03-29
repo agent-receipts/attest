@@ -3,7 +3,7 @@ import {
 	ALL_ACTIONS,
 	FILESYSTEM_ACTIONS,
 	getActionType,
-	getDefaultRiskLevel,
+	resolveActionType,
 	SYSTEM_ACTIONS,
 	UNKNOWN_ACTION,
 } from "./actions.js";
@@ -54,18 +54,14 @@ describe("getActionType", () => {
 	});
 });
 
-describe("getDefaultRiskLevel", () => {
+describe("resolveActionType", () => {
 	it("returns the correct entry for known types", () => {
-		expect(getDefaultRiskLevel("filesystem.file.delete").risk_level).toBe(
-			"high",
-		);
-		expect(getDefaultRiskLevel("system.browser.navigate").risk_level).toBe(
-			"low",
-		);
+		expect(resolveActionType("filesystem.file.delete").risk_level).toBe("high");
+		expect(resolveActionType("system.browser.navigate").risk_level).toBe("low");
 	});
 
 	it("falls back to unknown for unrecognized types", () => {
-		const result = getDefaultRiskLevel("something.totally.new");
+		const result = resolveActionType("something.totally.new");
 		expect(result.type).toBe("unknown");
 		expect(result.risk_level).toBe("medium");
 	});

@@ -1,6 +1,6 @@
 import type { ActionTypeEntry } from "./types.js";
 
-const FILESYSTEM_ACTIONS: ActionTypeEntry[] = [
+const FILESYSTEM_ACTIONS: readonly ActionTypeEntry[] = [
 	{
 		type: "filesystem.file.create",
 		description: "Create a file",
@@ -38,7 +38,7 @@ const FILESYSTEM_ACTIONS: ActionTypeEntry[] = [
 	},
 ];
 
-const SYSTEM_ACTIONS: ActionTypeEntry[] = [
+const SYSTEM_ACTIONS: readonly ActionTypeEntry[] = [
 	{
 		type: "system.application.launch",
 		description: "Launch an application",
@@ -82,7 +82,7 @@ const UNKNOWN_ACTION: ActionTypeEntry = {
 	risk_level: "medium",
 };
 
-const ALL_ACTIONS: ActionTypeEntry[] = [
+const ALL_ACTIONS: readonly ActionTypeEntry[] = [
 	...FILESYSTEM_ACTIONS,
 	...SYSTEM_ACTIONS,
 	UNKNOWN_ACTION,
@@ -96,7 +96,7 @@ export function getActionType(type: string): ActionTypeEntry | undefined {
 	return ACTION_MAP.get(type);
 }
 
-export function getDefaultRiskLevel(type: string): ActionTypeEntry {
+export function resolveActionType(type: string): ActionTypeEntry {
 	return ACTION_MAP.get(type) ?? UNKNOWN_ACTION;
 }
 
