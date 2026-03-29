@@ -48,6 +48,22 @@ describe("canonicalize", () => {
 		expect(() => canonicalize(Number.NaN)).toThrow("non-finite numbers");
 	});
 
+	it("throws for undefined", () => {
+		expect(() => canonicalize(undefined)).toThrow(
+			"undefined is not a valid JSON",
+		);
+	});
+
+	it("throws for non-plain objects", () => {
+		expect(() => canonicalize(new Date())).toThrow("non-plain objects");
+		expect(() => canonicalize(new Map())).toThrow("non-plain objects");
+	});
+
+	it("throws for unsupported types", () => {
+		expect(() => canonicalize(BigInt(1))).toThrow("unsupported type");
+		expect(() => canonicalize(Symbol("x"))).toThrow("unsupported type");
+	});
+
 	it("handles empty objects and arrays", () => {
 		expect(canonicalize({})).toBe("{}");
 		expect(canonicalize([])).toBe("[]");

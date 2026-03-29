@@ -6,13 +6,16 @@ import type { ActionReceipt, UnsignedActionReceipt } from "./types.js";
  *
  * Key rules:
  * - Object keys are sorted lexicographically (by UTF-16 code units)
- * - Numbers use shortest representation (no trailing zeros, no positive exponent sign)
+ * - Numbers use ECMAScript shortest representation (no trailing zeros; positive exponents may include '+')
  * - No whitespace between tokens
  * - Strings use minimal escaping (only required characters)
  * - null, boolean, and string values serialized per JSON spec
  */
 export function canonicalize(value: unknown): string {
-	if (value === null || value === undefined) return "null";
+	if (value === null) return "null";
+	if (value === undefined) {
+		throw new Error("RFC 8785: undefined is not a valid JSON value");
+	}
 	if (typeof value === "boolean") return value ? "true" : "false";
 	if (typeof value === "number") return canonicalizeNumber(value);
 	if (typeof value === "string") return JSON.stringify(value);
@@ -20,6 +23,15 @@ export function canonicalize(value: unknown): string {
 		return `[${value.map(canonicalize).join(",")}]`;
 	}
 	if (typeof value === "object") {
+		if (
+			value.constructor !== Object &&
+			value.constructor !== undefined &&
+			value.constructor !== null
+		) {
+			throw new Error(
+				`RFC 8785: non-plain objects are not valid JSON: ${value.constructor.name}`,
+			);
+		}
 		const keys = Object.keys(value).sort();
 		const entries = keys.map(
 			(k) =>
@@ -27,7 +39,7 @@ export function canonicalize(value: unknown): string {
 		);
 		return `{${entries.join(",")}}`;
 	}
-	return String(value);
+	throw new Error(`RFC 8785: unsupported type: ${typeof value}`);
 }
 
 /**
