@@ -1,3 +1,4 @@
+export { type CreateReceiptInput, createReceipt } from "./create.js";
 export { canonicalize, hashReceipt, sha256 } from "./hash.js";
 export {
 	generateKeyPair,
