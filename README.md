@@ -22,18 +22,71 @@ Each action an agent takes produces a **receipt**: a W3C Verifiable Credential s
 
 Parameters are hashed, not stored in plaintext. The human principal controls what is disclosed.
 
+## Architecture
+
+```
+┌─────────────┐    JSON-RPC     ┌─────────────┐    JSON-RPC     ┌─────────────┐
+│  MCP Client  │ ──────────────▶│  Attest      │ ──────────────▶│  MCP Server  │
+│  (Claude)    │ ◀──────────────│  Proxy       │ ◀──────────────│              │
+└─────────────┘                 └──────┬───────┘                └─────────────┘
+                                       │
+                                       │ intercepts tools/call
+                                       │ classifies, signs, chains
+                                       ▼
+                                ┌─────────────┐
+                                │   SQLite     │
+                                │   Receipt    │
+                                │   Store      │
+                                └─────────────┘
+```
+
+The proxy sits transparently between an MCP client and server, intercepting `tools/call` requests and responses. For each tool call it creates a signed, hash-chained receipt and persists it to SQLite.
+
+## Project structure
+
+```
+src/
+  receipt/      # Receipt creation, Ed25519 signing, RFC 8785 hashing, chain verification
+  store/        # SQLite persistence and chain integrity verification
+  taxonomy/     # Action type classification (15 types) + config file loading
+  proxy/        # MCP STDIO proxy, tools/call interceptor, receipt emitter
+  cli/          # list, inspect, export, verify commands
+```
+
 ## Status
 
-**Draft specification, pre-prototype.** See [docs/action-receipt-spec-v0.1.md](docs/action-receipt-spec-v0.1.md) for the full spec.
+**Core implementation complete.** See [docs/action-receipt-spec-v0.1.md](docs/action-receipt-spec-v0.1.md) for the full spec.
+
+- 141 tests, zero external dependencies (uses `node:crypto`, `node:sqlite`)
+- Ed25519 signing with RFC 8785 canonical JSON and SHA-256 hashing
+- Hash-chained receipts with tamper detection
+- SQLite store with indexed querying
+- MCP STDIO proxy with tool call interception and receipt emission
+- CLI commands for listing, inspecting, exporting, and verifying receipts
 
 ## Roadmap
 
 | Milestone | Description | Status |
 |---|---|---|
-| [M1: Receipt Core](https://github.com/ojongerius/attest/milestone/1) | Create, sign, chain, and verify receipts | In progress |
-| [M2: Storage](https://github.com/ojongerius/attest/milestone/2) | SQLite persistence and querying | Planned |
-| [M3: MCP Proxy Emitter](https://github.com/ojongerius/attest/milestone/3) | Intercept MCP tool calls, emit receipts | Planned |
-| [M4: CLI](https://github.com/ojongerius/attest/milestone/4) | Verify, inspect, list, and export receipts | Planned |
+| [M1: Receipt Core](https://github.com/ojongerius/attest/milestone/1) | Create, sign, chain, and verify receipts | Done |
+| [M2: Storage](https://github.com/ojongerius/attest/milestone/2) | SQLite persistence and querying | Done |
+| [M3: MCP Proxy Emitter](https://github.com/ojongerius/attest/milestone/3) | Intercept MCP tool calls, emit receipts | Done |
+| [M4: CLI](https://github.com/ojongerius/attest/milestone/4) | Verify, inspect, list, and export receipts | Done |
+| [M5: Integration Testing](https://github.com/ojongerius/attest/milestone/5) | End-to-end tests with real MCP clients | Planned |
+
+### Next up
+
+- [ ] `attest-proxy` binary entry point (wires proxy + interceptor + emitter + store)
+- [ ] `attest` CLI binary entry point (arg parsing for list/inspect/export/verify)
+- [ ] End-to-end test with Claude Desktop (#10)
+
+## Quick start
+
+```sh
+pnpm install
+pnpm run test       # run all 141 tests
+pnpm run check      # typecheck + lint
+```
 
 ## License
 
