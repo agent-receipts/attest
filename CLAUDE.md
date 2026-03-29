@@ -32,6 +32,11 @@ src/
   proxy/        # MCP proxy emitter
 ```
 
+## Workflow
+
+- All changes go through pull requests — never push directly to main
+- Always request review from `@copilot` when creating a PR
+
 ## Code conventions
 
 - Use `import type` for type-only imports (enforced by `verbatimModuleSyntax`)
