@@ -1,0 +1,72 @@
+import { describe, expect, it } from "vitest";
+import {
+	ALL_ACTIONS,
+	FILESYSTEM_ACTIONS,
+	getActionType,
+	getDefaultRiskLevel,
+	SYSTEM_ACTIONS,
+	UNKNOWN_ACTION,
+} from "./actions.js";
+
+describe("action taxonomy", () => {
+	it("has 7 filesystem actions", () => {
+		expect(FILESYSTEM_ACTIONS).toHaveLength(7);
+	});
+
+	it("has 7 system actions", () => {
+		expect(SYSTEM_ACTIONS).toHaveLength(7);
+	});
+
+	it("has 15 total actions (filesystem + system + unknown)", () => {
+		expect(ALL_ACTIONS).toHaveLength(15);
+	});
+
+	it("all action types are unique", () => {
+		const types = ALL_ACTIONS.map((a) => a.type);
+		expect(new Set(types).size).toBe(types.length);
+	});
+
+	it("all actions have valid risk levels", () => {
+		for (const action of ALL_ACTIONS) {
+			expect(["low", "medium", "high", "critical"]).toContain(
+				action.risk_level,
+			);
+		}
+	});
+});
+
+describe("getActionType", () => {
+	it("returns the entry for a known action type", () => {
+		const entry = getActionType("filesystem.file.read");
+		expect(entry).toEqual({
+			type: "filesystem.file.read",
+			description: "Read a file",
+			risk_level: "low",
+		});
+	});
+
+	it("returns undefined for an unknown action type", () => {
+		expect(getActionType("nonexistent.action")).toBeUndefined();
+	});
+
+	it("returns the unknown action entry for 'unknown'", () => {
+		expect(getActionType("unknown")).toEqual(UNKNOWN_ACTION);
+	});
+});
+
+describe("getDefaultRiskLevel", () => {
+	it("returns the correct entry for known types", () => {
+		expect(getDefaultRiskLevel("filesystem.file.delete").risk_level).toBe(
+			"high",
+		);
+		expect(getDefaultRiskLevel("system.browser.navigate").risk_level).toBe(
+			"low",
+		);
+	});
+
+	it("falls back to unknown for unrecognized types", () => {
+		const result = getDefaultRiskLevel("something.totally.new");
+		expect(result.type).toBe("unknown");
+		expect(result.risk_level).toBe("medium");
+	});
+});
