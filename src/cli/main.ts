@@ -6,6 +6,7 @@ import { openStore } from "../store/store.js";
 import { runExport } from "./export.js";
 import { runInspect } from "./inspect.js";
 import { runList } from "./list.js";
+import { runStats } from "./stats.js";
 import { runVerify } from "./verify.js";
 
 const USAGE = `Usage: attest <command> [options]
@@ -15,6 +16,7 @@ Commands:
   inspect   Show receipt details
   export    Export a chain as JSON
   verify    Verify chain integrity
+  stats     Show store summary statistics
 
 Global options:
   --db <path>     Path to receipts database (default: receipts.db)
@@ -33,7 +35,14 @@ Options:
   --before <time>    Filter receipts before timestamp (ISO 8601)
   --limit <n>        Maximum number of results
   --json             Output as JSON
+  --watch <secs>     Re-run every N seconds (default: 2)
   --db <path>        Path to receipts database (default: receipts.db)`;
+
+const STATS_USAGE = `Usage: attest stats [options]
+
+Options:
+  --json          Output as JSON
+  --db <path>     Path to receipts database (default: receipts.db)`;
 
 const INSPECT_USAGE = `Usage: attest inspect <receipt-id> [options]
 
@@ -78,6 +87,9 @@ function main(): void {
 		case "verify":
 			handleVerify(commandArgs);
 			break;
+		case "stats":
+			handleStats(commandArgs);
+			break;
 		default:
 			console.error(`Unknown command: ${command}\n`);
 			console.error(USAGE);
@@ -97,6 +109,7 @@ function handleList(args: string[]): void {
 			before: { type: "string" },
 			limit: { type: "string" },
 			json: { type: "boolean", default: false },
+			watch: { type: "string" },
 			db: { type: "string", default: "receipts.db" },
 			help: { type: "boolean", default: false },
 		},
@@ -107,19 +120,32 @@ function handleList(args: string[]): void {
 		return;
 	}
 
+	const listOptions = {
+		chainId: values.chain,
+		actionType: values.action,
+		riskLevel: values.risk,
+		status: values.status,
+		after: values.after,
+		before: values.before,
+		limit: values.limit ? Number(values.limit) : undefined,
+		json: values.json,
+	};
+
+	if (values.watch !== undefined) {
+		const interval = (Number(values.watch) || 2) * 1000;
+		const store = openStore(values.db ?? "receipts.db");
+		const tick = () => {
+			console.clear();
+			console.log(runList(store, listOptions));
+		};
+		tick();
+		setInterval(tick, interval);
+		return; // keep process alive
+	}
+
 	const store = openStore(values.db ?? "receipts.db");
 	try {
-		const output = runList(store, {
-			chainId: values.chain,
-			actionType: values.action,
-			riskLevel: values.risk,
-			status: values.status,
-			after: values.after,
-			before: values.before,
-			limit: values.limit ? Number(values.limit) : undefined,
-			json: values.json,
-		});
-		console.log(output);
+		console.log(runList(store, listOptions));
 	} finally {
 		store.close();
 	}
@@ -231,6 +257,30 @@ function handleVerify(args: string[]): void {
 		const output = runVerify(store, chainId, publicKey, {
 			json: values.json,
 		});
+		console.log(output);
+	} finally {
+		store.close();
+	}
+}
+
+function handleStats(args: string[]): void {
+	const { values } = parseArgs({
+		args,
+		options: {
+			json: { type: "boolean", default: false },
+			db: { type: "string", default: "receipts.db" },
+			help: { type: "boolean", default: false },
+		},
+	});
+
+	if (values.help) {
+		console.log(STATS_USAGE);
+		return;
+	}
+
+	const store = openStore(values.db ?? "receipts.db");
+	try {
+		const output = runStats(store, { json: values.json });
 		console.log(output);
 	} finally {
 		store.close();

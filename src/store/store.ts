@@ -44,6 +44,17 @@ export interface ReceiptQuery {
 	limit?: number;
 }
 
+/**
+ * Summary statistics for the receipt store.
+ */
+export interface StoreStats {
+	total: number;
+	chains: number;
+	byRisk: { risk_level: string; count: number }[];
+	byStatus: { status: string; count: number }[];
+	byAction: { action_type: string; count: number }[];
+}
+
 interface ReceiptRow {
 	receipt_json: string;
 }
@@ -170,6 +181,43 @@ export class ReceiptStore {
 			.all(...params) as unknown as ReceiptRow[];
 
 		return rows.map((r) => parseReceiptJson(r.receipt_json, "query"));
+	}
+
+	/**
+	 * Get summary statistics for the store.
+	 */
+	stats(): StoreStats {
+		const total = (
+			this.db.prepare("SELECT COUNT(*) as count FROM receipts").get() as {
+				count: number;
+			}
+		).count;
+
+		const chains = (
+			this.db
+				.prepare("SELECT COUNT(DISTINCT chain_id) as count FROM receipts")
+				.get() as { count: number }
+		).count;
+
+		const byRisk = this.db
+			.prepare(
+				"SELECT risk_level, COUNT(*) as count FROM receipts GROUP BY risk_level ORDER BY count DESC",
+			)
+			.all() as unknown as { risk_level: string; count: number }[];
+
+		const byStatus = this.db
+			.prepare(
+				"SELECT status, COUNT(*) as count FROM receipts GROUP BY status ORDER BY count DESC",
+			)
+			.all() as unknown as { status: string; count: number }[];
+
+		const byAction = this.db
+			.prepare(
+				"SELECT action_type, COUNT(*) as count FROM receipts GROUP BY action_type ORDER BY count DESC",
+			)
+			.all() as unknown as { action_type: string; count: number }[];
+
+		return { total, chains, byRisk, byStatus, byAction };
 	}
 
 	/**

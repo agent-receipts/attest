@@ -6,5 +6,6 @@ export {
 	openStore,
 	type ReceiptQuery,
 	ReceiptStore,
+	type StoreStats,
 } from "./store.js";
 export { verifyStoredChain } from "./verify.js";

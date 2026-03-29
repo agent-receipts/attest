@@ -57,7 +57,7 @@ src/
 
 **Core implementation complete.** See [docs/action-receipt-spec-v0.1.md](docs/action-receipt-spec-v0.1.md) for the full spec.
 
-- 141 tests, zero external dependencies (uses `node:crypto`, `node:sqlite`)
+- 150+ tests, zero external dependencies (uses `node:crypto`, `node:sqlite`)
 - Ed25519 signing with RFC 8785 canonical JSON and SHA-256 hashing
 - Hash-chained receipts with tamper detection
 - SQLite store with indexed querying
@@ -74,18 +74,62 @@ src/
 | [M4: CLI](https://github.com/ojongerius/attest/milestone/4) | Verify, inspect, list, and export receipts | Done |
 | [M5: Integration Testing](https://github.com/ojongerius/attest/milestone/5) | End-to-end tests with real MCP clients | Planned |
 
-### Next up
-
-- [ ] `attest-proxy` binary entry point (wires proxy + interceptor + emitter + store)
-- [ ] `attest` CLI binary entry point (arg parsing for list/inspect/export/verify)
-- [ ] End-to-end test with Claude Desktop (#10)
-
 ## Quick start
 
 ```sh
 pnpm install
-pnpm run test       # run all 141 tests
+pnpm run build      # compile TypeScript
+pnpm run test       # run all tests
 pnpm run check      # typecheck + lint
+```
+
+## Usage with Claude Desktop
+
+Add attest-proxy as an MCP server wrapper in your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "my-server-attested": {
+      "command": "node",
+      "args": [
+        "/path/to/attest/dist/proxy/main.js",
+        "--db", "/path/to/receipts.db",
+        "--taxonomy", "/path/to/taxonomy.json",
+        "--key", "/path/to/private.pem",
+        "--issuer", "did:agent:claude-desktop",
+        "--principal", "did:user:you",
+        "node", "/path/to/your-mcp-server.js"
+      ]
+    }
+  }
+}
+```
+
+Every tool call Claude makes through this server will produce a signed, hash-chained receipt in the SQLite database.
+
+See [e2e/README.md](e2e/README.md) for a complete setup guide with a sample MCP server.
+
+## CLI
+
+```sh
+# List receipts (with optional filters)
+attest list --db receipts.db --risk high --status failure
+
+# Watch for new receipts (refreshes every 2 seconds)
+attest list --db receipts.db --watch 2
+
+# Inspect a specific receipt (with signature verification)
+attest inspect urn:receipt:abc123 --key public.pem --db receipts.db
+
+# Verify chain integrity
+attest verify chain_abc --key public.pem --db receipts.db
+
+# Export chain as JSON bundle
+attest export chain_abc --db receipts.db > chain.json
+
+# Show store statistics
+attest stats --db receipts.db
 ```
 
 ## License
