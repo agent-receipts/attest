@@ -1,1 +1,20 @@
-// Receipt creation, signing, and chain management
+export {
+	type ActionReceipt,
+	type ActionTarget,
+	type Authorization,
+	type Chain,
+	CONTEXT,
+	CREDENTIAL_TYPE,
+	type CredentialSubject,
+	type Intent,
+	type Issuer,
+	type Operator,
+	type Outcome,
+	type OutcomeStatus,
+	type Principal,
+	type Proof,
+	type RiskLevel,
+	type StateChange,
+	type UnsignedActionReceipt,
+	VERSION,
+} from "./types.js";
