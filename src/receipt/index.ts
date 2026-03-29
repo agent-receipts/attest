@@ -1,4 +1,10 @@
 export {
+	generateKeyPair,
+	type KeyPair,
+	signReceipt,
+	verifyReceipt,
+} from "./signing.js";
+export {
 	type ActionReceipt,
 	type ActionTarget,
 	type Authorization,
