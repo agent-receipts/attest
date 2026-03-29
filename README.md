@@ -81,13 +81,25 @@ src/
 
 ## Roadmap
 
-| Milestone | Description | Status |
+### Done
+
+| Milestone | Description |
+|---|---|
+| [M1: Receipt Core](https://github.com/ojongerius/attest/milestone/1) | Create, sign, chain, and verify receipts |
+| [M2: Storage](https://github.com/ojongerius/attest/milestone/2) | SQLite persistence and querying |
+| [M3: MCP Proxy Emitter](https://github.com/ojongerius/attest/milestone/3) | Intercept MCP tool calls, emit receipts |
+| [M4: CLI](https://github.com/ojongerius/attest/milestone/4) | Verify, inspect, list, export, and stats commands |
+| [M5: Integration Testing](https://github.com/ojongerius/attest/milestone/5) | E2E setup, sample server, binary entry points |
+
+### Up next
+
+| Milestone | Description | Theme |
 |---|---|---|
-| [M1: Receipt Core](https://github.com/ojongerius/attest/milestone/1) | Create, sign, chain, and verify receipts | Done |
-| [M2: Storage](https://github.com/ojongerius/attest/milestone/2) | SQLite persistence and querying | Done |
-| [M3: MCP Proxy Emitter](https://github.com/ojongerius/attest/milestone/3) | Intercept MCP tool calls, emit receipts | Done |
-| [M4: CLI](https://github.com/ojongerius/attest/milestone/4) | Verify, inspect, list, and export receipts | Done |
-| [M5: Integration Testing](https://github.com/ojongerius/attest/milestone/5) | End-to-end tests with real MCP clients | Planned |
+| [M6: Developer Adoption](https://github.com/ojongerius/attest/milestone/6) | npm publish, API docs, Claude Desktop integration guide | Adoption |
+| [M7: Expanded Taxonomy](https://github.com/ojongerius/attest/milestone/7) | Communication, document, financial, and data action types | Protocol |
+| [M8: Production Hardening](https://github.com/ojongerius/attest/milestone/8) | Trusted timestamps, multi-agent chains, key management | Enterprise |
+| [M9: Web Viewer](https://github.com/ojongerius/attest/milestone/9) | Receipt timeline, chain visualization, filtering UI | Product |
+| [M10: Compliance & Integrations](https://github.com/ojongerius/attest/milestone/10) | EU AI Act export, SIEM streaming, C2PA alignment | Enterprise |
 
 ## Quick start
 
