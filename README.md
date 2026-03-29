@@ -1,105 +1,78 @@
+<div align="center">
+
 # Attest
 
-Cryptographically signed audit trail for AI agent actions.
+### Cryptographically signed audit trail for AI agent actions
 
-Attest is an open protocol and reference implementation for **Action Receipts** — signed, hash-chained records of what an AI agent did, why, whether it succeeded, and whether it can be undone.
+[![CI](https://github.com/ojongerius/attest/actions/workflows/ci.yml/badge.svg)](https://github.com/ojongerius/attest/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-ESM-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 
-**See also:** [beacon](https://github.com/ojongerius/beacon) — the prototype that preceded this project.
+---
 
- | | [Beacon](https://github.com/ojongerius/beacon) | [Attest](https://github.com/ojongerius/attest) |
- |---|---|---|
- | **Focus** | Audit proxy prototype | Open protocol + reference implementation |
- | **STDIO proxy** | ✓ | ✓ |
- | **JSON-RPC interception** | ✓ | ✓ |
- | **SQLite logging** | ✓ | ✓ |
- | **Cryptographic signing** | — | Ed25519 |
- | **Hash-chained receipts** | — | SHA-256 + RFC 8785 |
- | **W3C Verifiable Credentials** | — | ✓ |
- | **Action taxonomy** | Basic | 15 types with risk levels |
- | **Chain verification CLI** | — | ✓ |
- | **Formal spec** | — | [Action Receipt v0.1](docs/action-receipt-spec-v0.1.md) |
+**AI agents act on your behalf. Attest proves what they did.**
 
-## Why
+An open protocol and TypeScript reference implementation for **Action Receipts** — signed,
+hash-chained records of every action an AI agent takes.
+Like [C2PA Content Credentials](https://c2pa.org/), but for agent actions instead of media files.
 
-AI agents act on behalf of humans — sending emails, modifying documents, executing commands. No open standard exists for recording these actions in a way that is tamper-evident, privacy-preserving, and machine-verifiable.
+[Spec](docs/action-receipt-spec-v0.1.md) &bull; [Quick Start](#quick-start) &bull; [CLI](#cli) &bull; [Claude Desktop Setup](#usage-with-claude-desktop)
 
-Attest fills this gap.
+</div>
 
-## How it works
+---
 
-Each action an agent takes produces a **receipt**: a W3C Verifiable Credential signed with Ed25519, containing:
+## The problem
 
-- **What** happened (action type from a standardized taxonomy)
-- **Who** authorized it (the human principal)
-- **Which agent** performed it (the issuer)
-- **Whether it succeeded** (outcome and reversibility)
-- **Chain integrity** (hash link to the previous receipt)
+AI agents send emails, modify documents, execute commands, and make purchases — with no standard way to record what happened. **93% of open-source agent projects use unscoped API keys with no audit trail.** The EU AI Act mandates traceability, but no standard format exists.
 
-Parameters are hashed, not stored in plaintext. The human principal controls what is disclosed.
+## How Attest solves it
+
+Every agent action produces a **receipt** — a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model-2.0/) signed with Ed25519:
+
+| Receipt field | What it captures |
+|:---|:---|
+| **Action** | What happened, classified by a standardized taxonomy |
+| **Principal** | Who authorized it (human or org) |
+| **Issuer** | Which agent performed it |
+| **Outcome** | Success/failure, reversibility, undo method |
+| **Chain** | Hash link to the previous receipt (tamper-evident) |
+| **Privacy** | Parameters are hashed, never stored in plaintext |
+
+Receipts are hash-chained — if anyone modifies or deletes one, the chain breaks and you'll know.
 
 ## Architecture
 
 ```
-┌─────────────┐    JSON-RPC     ┌─────────────┐    JSON-RPC     ┌─────────────┐
-│  MCP Client  │ ──────────────▶│  Attest      │ ──────────────▶│  MCP Server  │
-│  (Claude)    │ ◀──────────────│  Proxy       │ ◀──────────────│              │
-└─────────────┘                 └──────┬───────┘                └─────────────┘
-                                       │
-                                       │ intercepts tools/call
-                                       │ classifies, signs, chains
-                                       ▼
-                                ┌─────────────┐
-                                │   SQLite     │
-                                │   Receipt    │
-                                │   Store      │
-                                └─────────────┘
+                         Attest Proxy
+                    ┌───────────────────┐
+ ┌──────────┐      │  intercept         │      ┌──────────┐
+ │MCP Client│─────▶│  classify          │─────▶│MCP Server│
+ │ (Claude) │◀─────│  sign              │◀─────│          │
+ └──────────┘      │  chain             │      └──────────┘
+                    └────────┬──────────┘
+                             │
+                             ▼
+                    ┌───────────────────┐
+                    │  SQLite Receipt   │
+                    │  Store            │
+                    └───────────────────┘
 ```
 
-The proxy sits transparently between an MCP client and server, intercepting `tools/call` requests and responses. For each tool call it creates a signed, hash-chained receipt and persists it to SQLite.
+The proxy sits transparently between an MCP client and server. For each `tools/call` it creates a signed, hash-chained receipt and persists it locally.
 
-## Project structure
+## Key features
 
-```
-src/
-  receipt/      # Receipt creation, Ed25519 signing, RFC 8785 hashing, chain verification
-  store/        # SQLite persistence and chain integrity verification
-  taxonomy/     # Action type classification (15 types) + config file loading
-  proxy/        # MCP STDIO proxy, tools/call interceptor, receipt emitter
-  cli/          # list, inspect, export, verify commands
-```
-
-## Status
-
-**Core implementation complete.** See [docs/action-receipt-spec-v0.1.md](docs/action-receipt-spec-v0.1.md) for the full spec.
-
-- 150+ tests, zero external dependencies (uses `node:crypto`, `node:sqlite`)
-- Ed25519 signing with RFC 8785 canonical JSON and SHA-256 hashing
-- Hash-chained receipts with tamper detection
-- SQLite store with indexed querying
-- MCP STDIO proxy with tool call interception and receipt emission
-- CLI commands for listing, inspecting, exporting, and verifying receipts
-
-## Roadmap
-
-### Done
-
-| Milestone | Description |
-|---|---|
-| [M1: Receipt Core](https://github.com/ojongerius/attest/milestone/1) | Create, sign, chain, and verify receipts |
-| [M2: Storage](https://github.com/ojongerius/attest/milestone/2) | SQLite persistence and querying |
-| [M3: MCP Proxy Emitter](https://github.com/ojongerius/attest/milestone/3) | Intercept MCP tool calls, emit receipts |
-| [M4: CLI](https://github.com/ojongerius/attest/milestone/4) | Verify, inspect, list, export, and stats commands |
-| [M5: Integration Testing](https://github.com/ojongerius/attest/milestone/5) | E2E setup, sample server, binary entry points |
-
-### Up next
-
-| Milestone | Description | Theme |
-|---|---|---|
-| [M6: Developer Adoption](https://github.com/ojongerius/attest/milestone/6) | npm publish, API docs, Claude Desktop integration guide | Adoption |
-| [M7: Expanded Taxonomy](https://github.com/ojongerius/attest/milestone/7) | Communication, document, financial, and data action types | Protocol |
-| [M8: Production Hardening](https://github.com/ojongerius/attest/milestone/8) | Trusted timestamps, multi-agent chains, key management | Enterprise |
-| [M9: Web Viewer](https://github.com/ojongerius/attest/milestone/9) | Receipt timeline, chain visualization, filtering UI | Product |
-| [M10: Compliance & Integrations](https://github.com/ojongerius/attest/milestone/10) | EU AI Act export, SIEM streaming, C2PA alignment | Enterprise |
+| | Feature | Detail |
+|:---|:---|:---|
+| **Ed25519 signing** | Every receipt is cryptographically signed | `node:crypto`, zero external deps |
+| **Hash chaining** | SHA-256 + RFC 8785 canonical JSON | Tamper-evident append-only log |
+| **W3C VC format** | Receipts conform to Verifiable Credentials 2.0 | Interoperable, standards-based |
+| **Action taxonomy** | 15 action types across filesystem & system domains | Risk-classified (low/medium/high/critical) |
+| **Privacy by default** | Parameters hashed, not stored | Human principal controls disclosure |
+| **Agent-agnostic** | Works with any agent that produces JSON | MCP is first target, not the only one |
+| **150+ tests** | Comprehensive coverage | Zero external runtime dependencies |
 
 ## Quick start
 
@@ -112,7 +85,7 @@ pnpm run check      # typecheck + lint
 
 ## Usage with Claude Desktop
 
-Add attest-proxy as an MCP server wrapper in your `claude_desktop_config.json`:
+Add `attest-proxy` as an MCP server wrapper in your `claude_desktop_config.json`:
 
 ```json
 {
@@ -140,28 +113,17 @@ See [e2e/README.md](e2e/README.md) for a complete setup guide with a sample MCP 
 ## CLI
 
 ```sh
-# List receipts (with optional filters)
-attest list --db receipts.db --risk high --status failure
-
-# Watch for new receipts (refreshes every 2 seconds)
-attest list --db receipts.db --watch 2
-
-# Inspect a specific receipt (with signature verification)
-attest inspect urn:receipt:abc123 --key public.pem --db receipts.db
-
-# Verify chain integrity
-attest verify chain_abc --key public.pem --db receipts.db
-
-# Export chain as JSON bundle
-attest export chain_abc --db receipts.db > chain.json
-
-# Show store statistics
-attest stats --db receipts.db
+attest list --db receipts.db                         # list all receipts
+attest list --db receipts.db --risk high             # filter by risk level
+attest list --db receipts.db --watch 2               # live tail (refresh every 2s)
+attest inspect urn:receipt:abc --key pub.pem --db receipts.db   # receipt detail + sig check
+attest verify chain_abc --key pub.pem --db receipts.db          # verify chain integrity
+attest export chain_abc --db receipts.db > chain.json           # export chain as JSON
+attest stats --db receipts.db                                   # store statistics
 ```
 
-## Example output
-
-After proxying three tool calls (two `read_file`, one `write_file`) through `attest-proxy`:
+<details>
+<summary><b>Example output</b></summary>
 
 ```
 $ attest list --db receipts.db
@@ -216,6 +178,40 @@ By action type:
   filesystem.file.read           2
   filesystem.file.create         1
 ```
+
+</details>
+
+## Project structure
+
+```
+src/
+  receipt/      # Receipt creation, Ed25519 signing, RFC 8785 hashing, chain verification
+  store/        # SQLite persistence and chain integrity verification
+  taxonomy/     # Action type classification (15 types) + config file loading
+  proxy/        # MCP STDIO proxy, tools/call interceptor, receipt emitter
+  cli/          # list, inspect, export, verify commands
+```
+
+## Roadmap
+
+**Core implementation complete** — see the [full spec](docs/action-receipt-spec-v0.1.md).
+
+| | Milestone | Status |
+|:---|:---|:---|
+| [M1](https://github.com/ojongerius/attest/milestone/1) | Receipt Core — create, sign, chain, verify | Done |
+| [M2](https://github.com/ojongerius/attest/milestone/2) | Storage — SQLite persistence and querying | Done |
+| [M3](https://github.com/ojongerius/attest/milestone/3) | MCP Proxy Emitter — intercept tool calls, emit receipts | Done |
+| [M4](https://github.com/ojongerius/attest/milestone/4) | CLI — verify, inspect, list, export, stats | Done |
+| [M5](https://github.com/ojongerius/attest/milestone/5) | Integration Testing — E2E, sample server, binaries | Done |
+| [M6](https://github.com/ojongerius/attest/milestone/6) | Developer Adoption — npm publish, API docs | Next |
+| [M7](https://github.com/ojongerius/attest/milestone/7) | Expanded Taxonomy — communication, financial, data | Planned |
+| [M8](https://github.com/ojongerius/attest/milestone/8) | Production Hardening — trusted timestamps, key mgmt | Planned |
+| [M9](https://github.com/ojongerius/attest/milestone/9) | Web Viewer — timeline, chain visualization | Planned |
+| [M10](https://github.com/ojongerius/attest/milestone/10) | Compliance — EU AI Act export, SIEM, C2PA | Planned |
+
+## Prior art
+
+Attest builds on [beacon](https://github.com/ojongerius/beacon), an earlier audit proxy prototype. Attest adds cryptographic signing, hash chaining, W3C VC conformance, a formal spec, and a CLI.
 
 ## License
 
