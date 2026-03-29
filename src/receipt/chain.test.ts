@@ -179,5 +179,13 @@ describe("verifyChain", () => {
 		// Should still have results for all 3 receipts
 		expect(result.receipts).toHaveLength(3);
 		expect(result.brokenAt).toBe(1);
+
+		// Tampered receipt: signature invalid, but hash link to first is still valid
+		expect(result.receipts[1]?.signatureValid).toBe(false);
+		expect(result.receipts[1]?.hashLinkValid).toBe(true);
+
+		// Third receipt: own signature valid, but hash link to tampered second is broken
+		expect(result.receipts[2]?.signatureValid).toBe(true);
+		expect(result.receipts[2]?.hashLinkValid).toBe(false);
 	});
 });

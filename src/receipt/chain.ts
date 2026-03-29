@@ -56,7 +56,8 @@ export function verifyChain(
 	let previous: ActionReceipt | undefined;
 
 	for (let i = 0; i < receipts.length; i++) {
-		const receipt = receipts[i] as ActionReceipt;
+		const receipt = receipts[i];
+		if (!receipt) continue;
 		const chain = receipt.credentialSubject.chain;
 
 		const signatureValid = verifyReceipt(receipt, publicKey);
@@ -70,11 +71,16 @@ export function verifyChain(
 		}
 
 		let sequenceValid: boolean;
-		if (previous === undefined) {
-			sequenceValid = chain.sequence >= 1;
+		const currentSequence = chain.sequence;
+		if (!Number.isSafeInteger(currentSequence)) {
+			sequenceValid = false;
+		} else if (previous === undefined) {
+			sequenceValid = currentSequence >= 1;
 		} else {
 			const prevSequence = previous.credentialSubject.chain.sequence;
-			sequenceValid = chain.sequence === prevSequence + 1;
+			sequenceValid =
+				Number.isSafeInteger(prevSequence) &&
+				currentSequence === prevSequence + 1;
 		}
 
 		const verification: ReceiptVerification = {
