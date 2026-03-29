@@ -7,4 +7,5 @@ export {
 	UNKNOWN_ACTION,
 } from "./actions.js";
 export { type ClassificationResult, classifyToolCall } from "./classify.js";
+export { loadTaxonomyConfig, type TaxonomyConfig } from "./config.js";
 export type { ActionTypeEntry, TaxonomyMapping } from "./types.js";
