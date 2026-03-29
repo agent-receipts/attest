@@ -132,6 +132,64 @@ attest export chain_abc --db receipts.db > chain.json
 attest stats --db receipts.db
 ```
 
+## Example output
+
+After proxying three tool calls (two `read_file`, one `write_file`) through `attest-proxy`:
+
+```
+$ attest list --db receipts.db
+
+CHAIN                  ST  RISK      ACTION                          TIMESTAMP                     ID
+demo_session_001#1  ✓  LOW       filesystem.file.read            2026-03-29T07:12:19.638Z  urn:receipt:f3c5a1e1-...
+demo_session_001#2  ✓  LOW       filesystem.file.create          2026-03-29T07:12:19.645Z  urn:receipt:5964d07c-...
+demo_session_001#3  ✓  LOW       filesystem.file.read            2026-03-29T07:12:19.647Z  urn:receipt:7b4c7399-...
+```
+
+```
+$ attest inspect urn:receipt:f3c5a1e1-... --key public.pem --db receipts.db
+
+Receipt:    urn:receipt:f3c5a1e1-a097-417d-b1c3-da40cd806502
+Issued:     2026-03-29T07:12:19.638Z
+Issuer:     did:agent:claude-desktop
+Principal:  did:user:otto
+
+Action:     filesystem.file.read
+Risk:       low
+Timestamp:  2026-03-29T07:12:19.638Z
+Status:     success
+
+Chain:      demo_session_001
+Sequence:   1
+Previous:   (none)
+
+Signature:  ✓ valid
+```
+
+```
+$ attest verify demo_session_001 --key public.pem --db receipts.db
+
+Chain:    demo_session_001
+Receipts: 3
+Status:   ✓ valid
+```
+
+```
+$ attest stats --db receipts.db
+
+Receipts: 3
+Chains:   1
+
+By risk level:
+  low        3
+
+By status:
+  success    3
+
+By action type:
+  filesystem.file.read           2
+  filesystem.file.create         1
+```
+
 ## License
 
 Apache 2.0 — see [LICENSE](LICENSE).
