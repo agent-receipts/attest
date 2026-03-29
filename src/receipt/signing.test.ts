@@ -59,7 +59,7 @@ describe("signReceipt", () => {
 		expect(signed.proof.type).toBe("Ed25519Signature2020");
 		expect(signed.proof.proofPurpose).toBe("assertionMethod");
 		expect(signed.proof.verificationMethod).toBe(verificationMethod);
-		expect(signed.proof.proofValue).toMatch(/^z[A-Za-z0-9+/=]+$/);
+		expect(signed.proof.proofValue).toMatch(/^u[A-Za-z0-9_-]+$/);
 		expect(signed.proof.created).toBeDefined();
 	});
 
@@ -92,6 +92,16 @@ describe("verifyReceipt", () => {
 
 		const signed = signReceipt(unsigned, privateKey, "did:agent:test#key-1");
 		signed.credentialSubject.action.risk_level = "critical";
+
+		expect(verifyReceipt(signed, publicKey)).toBe(false);
+	});
+
+	it("returns false for malformed proofValue", () => {
+		const { publicKey, privateKey } = generateKeyPair();
+		const unsigned = makeUnsignedReceipt();
+
+		const signed = signReceipt(unsigned, privateKey, "did:agent:test#key-1");
+		signed.proof.proofValue = "invalid";
 
 		expect(verifyReceipt(signed, publicKey)).toBe(false);
 	});

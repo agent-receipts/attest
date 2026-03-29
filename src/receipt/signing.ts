@@ -6,8 +6,14 @@ export interface KeyPair {
 	privateKey: string;
 }
 
+/** Multibase prefix for base64url (no padding) encoding. */
+const MULTIBASE_BASE64URL = "u";
+
 /**
  * Generate an Ed25519 key pair (PEM-encoded).
+ *
+ * Note: uses synchronous generation which blocks the event loop.
+ * For long-running services, consider wrapping in a worker thread.
  */
 export function generateKeyPair(): KeyPair {
 	const { publicKey, privateKey } = generateKeyPairSync("ed25519", {
@@ -53,7 +59,7 @@ export function signReceipt(
 		created: new Date().toISOString(),
 		verificationMethod,
 		proofPurpose: "assertionMethod",
-		proofValue: `z${signature.toString("base64")}`,
+		proofValue: `${MULTIBASE_BASE64URL}${signature.toString("base64url")}`,
 	};
 
 	return { ...unsigned, proof };
@@ -67,10 +73,18 @@ export function verifyReceipt(
 	publicKey: string,
 ): boolean {
 	const { proof, ...unsigned } = receipt;
-	const data = canonicalize(unsigned as UnsignedActionReceipt);
 
-	const signatureBase64 = proof.proofValue.slice(1); // strip leading 'z'
-	const signature = Buffer.from(signatureBase64, "base64");
+	const proofValue = proof?.proofValue;
+	if (
+		typeof proofValue !== "string" ||
+		proofValue.length < 2 ||
+		!proofValue.startsWith(MULTIBASE_BASE64URL)
+	) {
+		return false;
+	}
+
+	const data = canonicalize(unsigned as UnsignedActionReceipt);
+	const signature = Buffer.from(proofValue.slice(1), "base64url");
 
 	return verify(null, data, publicKey, signature);
 }
