@@ -1,0 +1,6 @@
+{
+	"mappings": [
+		{ "tool_name": "read_file", "action_type": "filesystem.file.read" },
+		{ "tool_name": "write_file", "action_type": "filesystem.file.create" }
+	]
+}
