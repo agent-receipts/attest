@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@attest-protocol/attest-ts':
-        specifier: file:../attest-ts
-        version: file:../attest-ts
+        specifier: ^0.1.0
+        version: 0.1.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.4.9
@@ -30,8 +30,8 @@ importers:
 
 packages:
 
-  '@attest-protocol/attest-ts@file:../attest-ts':
-    resolution: {directory: ../attest-ts, type: directory}
+  '@attest-protocol/attest-ts@0.1.0':
+    resolution: {integrity: sha512-1hcIJ18nXQMSx2ScLaX7FhgeowZtUt4dX+Q19xUS0+TBpmqAv5wdBVCGYLttiV7jF9vvfCmyAaP21y2YbqiUjA==}
 
   '@biomejs/biome@2.4.9':
     resolution: {integrity: sha512-wvZW92FrwitTcacvCBT8xdAbfbxWfDLwjYMmU3djjqQTh7Ni4ZdiWIT/x5VcZ+RQuxiKzIOzi5D+dcyJDFZMsA==}
@@ -577,7 +577,7 @@ packages:
 
 snapshots:
 
-  '@attest-protocol/attest-ts@file:../attest-ts': {}
+  '@attest-protocol/attest-ts@0.1.0': {}
 
   '@biomejs/biome@2.4.9':
     optionalDependencies:
