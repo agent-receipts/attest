@@ -1,9 +1,10 @@
 import type {
 	ActionReceipt,
 	OutcomeStatus,
+	ReceiptQuery,
+	ReceiptStore,
 	RiskLevel,
-} from "../receipt/types.js";
-import type { ReceiptQuery, ReceiptStore } from "../store/store.js";
+} from "@attest-protocol/attest-ts";
 
 const VALID_RISK_LEVELS = new Set<string>([
 	"low",

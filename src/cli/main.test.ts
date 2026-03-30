@@ -2,10 +2,13 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import {
+	generateKeyPair,
+	hashReceipt,
+	openStore,
+	signReceipt,
+} from "@attest-protocol/attest-ts";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { hashReceipt } from "../receipt/hash.js";
-import { generateKeyPair, signReceipt } from "../receipt/signing.js";
-import { openStore } from "../store/store.js";
 import { makeReceipt, makeUnsigned } from "../test-utils/receipts.js";
 
 const CLI = join(

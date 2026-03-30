@@ -2,7 +2,7 @@
 
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { openStore } from "../store/store.js";
+import { openStore } from "@attest-protocol/attest-ts";
 import { runExport } from "./export.js";
 import { runInspect } from "./inspect.js";
 import { runList } from "./list.js";

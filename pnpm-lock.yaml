@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      '@attest-protocol/attest-ts':
+        specifier: ^0.1.0
+        version: 0.1.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.4.9
@@ -25,6 +29,9 @@ importers:
         version: 4.1.2(@types/node@25.5.0)(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@25.5.0))
 
 packages:
+
+  '@attest-protocol/attest-ts@0.1.0':
+    resolution: {integrity: sha512-1hcIJ18nXQMSx2ScLaX7FhgeowZtUt4dX+Q19xUS0+TBpmqAv5wdBVCGYLttiV7jF9vvfCmyAaP21y2YbqiUjA==}
 
   '@biomejs/biome@2.4.9':
     resolution: {integrity: sha512-wvZW92FrwitTcacvCBT8xdAbfbxWfDLwjYMmU3djjqQTh7Ni4ZdiWIT/x5VcZ+RQuxiKzIOzi5D+dcyJDFZMsA==}
@@ -569,6 +576,8 @@ packages:
     hasBin: true
 
 snapshots:
+
+  '@attest-protocol/attest-ts@0.1.0': {}
 
   '@biomejs/biome@2.4.9':
     optionalDependencies:

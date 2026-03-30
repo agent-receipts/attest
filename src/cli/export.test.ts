@@ -1,6 +1,5 @@
+import { openStore, type ReceiptStore } from "@attest-protocol/attest-ts";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import type { ReceiptStore } from "../store/store.js";
-import { openStore } from "../store/store.js";
 import { makeReceipt } from "../test-utils/receipts.js";
 import { runExport } from "./export.js";
 

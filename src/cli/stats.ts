@@ -1,4 +1,4 @@
-import type { ReceiptStore } from "../store/store.js";
+import type { ReceiptStore } from "@attest-protocol/attest-ts";
 
 /**
  * Options for the `attest stats` command.

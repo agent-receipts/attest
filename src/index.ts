@@ -1,1 +1,1 @@
-export const VERSION = "0.1.0";
+export { RECEIPT_VERSION, VERSION } from "@attest-protocol/attest-ts";

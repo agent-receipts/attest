@@ -3,8 +3,8 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { openStore } from "@attest-protocol/attest-ts";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { openStore } from "../store/store.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROXY_CLI = join(__dirname, "..", "..", "dist", "proxy", "main.js");

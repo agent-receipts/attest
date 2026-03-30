@@ -1,13 +1,15 @@
 /**
  * Shared test factories for receipts.
  */
-import type {
-	ActionReceipt,
-	OutcomeStatus,
-	RiskLevel,
-	UnsignedActionReceipt,
-} from "../receipt/types.js";
-import { CONTEXT, CREDENTIAL_TYPE, VERSION } from "../receipt/types.js";
+import {
+	type ActionReceipt,
+	CONTEXT,
+	CREDENTIAL_TYPE,
+	type OutcomeStatus,
+	type RiskLevel,
+	type UnsignedActionReceipt,
+	RECEIPT_VERSION as VERSION,
+} from "@attest-protocol/attest-ts";
 
 /**
  * Create a signed ActionReceipt with overridable fields.

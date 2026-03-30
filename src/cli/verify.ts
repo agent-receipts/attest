@@ -1,5 +1,7 @@
-import type { ReceiptStore } from "../store/store.js";
-import { verifyStoredChain } from "../store/verify.js";
+import {
+	type ReceiptStore,
+	verifyStoredChain,
+} from "@attest-protocol/attest-ts";
 
 /**
  * Options for the `attest verify` command.

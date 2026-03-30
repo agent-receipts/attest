@@ -1,8 +1,11 @@
+import {
+	generateKeyPair,
+	hashReceipt,
+	openStore,
+	type ReceiptStore,
+	signReceipt,
+} from "@attest-protocol/attest-ts";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { hashReceipt } from "../receipt/hash.js";
-import { generateKeyPair, signReceipt } from "../receipt/signing.js";
-import type { ReceiptStore } from "../store/store.js";
-import { openStore } from "../store/store.js";
 import { makeUnsigned } from "../test-utils/receipts.js";
 import { runVerify } from "./verify.js";
 

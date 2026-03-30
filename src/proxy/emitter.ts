@@ -1,11 +1,15 @@
 import { randomUUID } from "node:crypto";
-import { createReceipt } from "../receipt/create.js";
-import { hashReceipt, sha256 } from "../receipt/hash.js";
-import { signReceipt } from "../receipt/signing.js";
-import type { Issuer, Principal } from "../receipt/types.js";
-import type { ReceiptStore } from "../store/store.js";
-import { classifyToolCall } from "../taxonomy/classify.js";
-import type { TaxonomyMapping } from "../taxonomy/types.js";
+import {
+	classifyToolCall,
+	createReceipt,
+	hashReceipt,
+	type Issuer,
+	type Principal,
+	type ReceiptStore,
+	sha256,
+	signReceipt,
+	type TaxonomyMapping,
+} from "@attest-protocol/attest-ts";
 import type { ToolCallComplete, ToolCallInterceptor } from "./interceptor.js";
 
 /**

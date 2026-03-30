@@ -2,9 +2,11 @@
 
 import { readFileSync } from "node:fs";
 import { parseArgs } from "node:util";
-import { generateKeyPair } from "../receipt/signing.js";
-import { openStore } from "../store/store.js";
-import { loadTaxonomyConfig } from "../taxonomy/config.js";
+import {
+	generateKeyPair,
+	loadTaxonomyConfig,
+	openStore,
+} from "@attest-protocol/attest-ts";
 import { ReceiptEmitter } from "./emitter.js";
 import { ToolCallInterceptor } from "./interceptor.js";
 import { McpProxy } from "./proxy.js";

@@ -1,11 +1,14 @@
 import { dirname, join } from "node:path";
 import { PassThrough } from "node:stream";
 import { fileURLToPath } from "node:url";
+import {
+	generateKeyPair,
+	hashReceipt,
+	openStore,
+	type ReceiptStore,
+	verifyReceipt,
+} from "@attest-protocol/attest-ts";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { hashReceipt } from "../receipt/hash.js";
-import { generateKeyPair, verifyReceipt } from "../receipt/signing.js";
-import type { ReceiptStore } from "../store/store.js";
-import { openStore } from "../store/store.js";
 import { readLine } from "../test-utils/streams.js";
 import type { EmitterConfig } from "./emitter.js";
 import { ReceiptEmitter } from "./emitter.js";

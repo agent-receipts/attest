@@ -1,5 +1,4 @@
-import { verifyReceipt } from "../receipt/signing.js";
-import type { ReceiptStore } from "../store/store.js";
+import { type ReceiptStore, verifyReceipt } from "@attest-protocol/attest-ts";
 
 /**
  * Options for the `attest inspect` command.

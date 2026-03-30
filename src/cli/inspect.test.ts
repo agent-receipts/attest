@@ -1,9 +1,14 @@
+import {
+	CONTEXT,
+	CREDENTIAL_TYPE,
+	generateKeyPair,
+	openStore,
+	type ReceiptStore,
+	signReceipt,
+	type UnsignedActionReceipt,
+	RECEIPT_VERSION as VERSION,
+} from "@attest-protocol/attest-ts";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { generateKeyPair, signReceipt } from "../receipt/signing.js";
-import type { UnsignedActionReceipt } from "../receipt/types.js";
-import { CONTEXT, CREDENTIAL_TYPE, VERSION } from "../receipt/types.js";
-import type { ReceiptStore } from "../store/store.js";
-import { openStore } from "../store/store.js";
 import { runInspect } from "./inspect.js";
 
 function makeUnsigned(): UnsignedActionReceipt {

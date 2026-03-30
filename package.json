@@ -24,6 +24,9 @@
 		]
 	},
 	"packageManager": "pnpm@10.33.0",
+	"dependencies": {
+		"@attest-protocol/attest-ts": "^0.1.0"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.9",
 		"@types/node": "^25.5.0",
