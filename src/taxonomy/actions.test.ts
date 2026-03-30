@@ -9,16 +9,16 @@ import {
 } from "./actions.js";
 
 describe("action taxonomy", () => {
-	it("has 7 filesystem actions", () => {
-		expect(FILESYSTEM_ACTIONS).toHaveLength(7);
+	it("has 8 filesystem actions", () => {
+		expect(FILESYSTEM_ACTIONS).toHaveLength(8);
 	});
 
 	it("has 7 system actions", () => {
 		expect(SYSTEM_ACTIONS).toHaveLength(7);
 	});
 
-	it("has 15 total actions (filesystem + system + unknown)", () => {
-		expect(ALL_ACTIONS).toHaveLength(15);
+	it("has 16 total actions (filesystem + system + unknown)", () => {
+		expect(ALL_ACTIONS).toHaveLength(16);
 	});
 
 	it("all action types are unique", () => {
