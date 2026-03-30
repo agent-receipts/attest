@@ -16,7 +16,7 @@
 An open protocol for **Action Receipts** — signed, hash-chained records of every action an AI agent takes.
 Like [C2PA Content Credentials](https://c2pa.org/), but for agent actions instead of media files.
 
-[Spec](docs/action-receipt-spec-v0.1.md) &bull; [Quick Start](#quick-start) &bull; [CLI](#cli) &bull; [Claude Desktop Setup](#usage-with-claude-desktop)
+[Spec](docs/action-receipt-spec-v0.1.md) &bull; [FAQ](docs/faq.md) &bull; [Quick Start](#quick-start) &bull; [CLI](#cli) &bull; [Claude Desktop Setup](#usage-with-claude-desktop)
 
 </div>
 
