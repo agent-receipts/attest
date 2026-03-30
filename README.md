@@ -16,7 +16,7 @@
 An open protocol for **Action Receipts** — signed, hash-chained records of every action an AI agent takes.
 Like [C2PA Content Credentials](https://c2pa.org/), but for agent actions instead of media files.
 
-[Spec](docs/action-receipt-spec-v0.1.md) &bull; [FAQ](docs/faq.md) &bull; [Quick Start](#quick-start) &bull; [CLI](#cli) &bull; [Claude Desktop Setup](#usage-with-claude-desktop)
+[Spec](https://github.com/attest-protocol/spec) &bull; [TypeScript SDK](https://github.com/attest-protocol/attest-ts) &bull; [FAQ](docs/faq.md) &bull; [Quick Start](#quick-start) &bull; [CLI](#cli) &bull; [Claude Desktop Setup](#usage-with-claude-desktop)
 
 </div>
 
@@ -47,13 +47,13 @@ Receipts are hash-chained — if anyone modifies or deletes one, the chain break
 
 The protocol is **agent-agnostic**. It does not assume MCP, OpenAI function calling, or any specific agent framework. Any agent that can produce JSON and sign it can emit receipts.
 
-See the [full specification](docs/action-receipt-spec-v0.1.md) for schema details, chain verification rules, and design decisions.
+See the [full specification](https://github.com/attest-protocol/spec) for schema details, chain verification rules, and design decisions.
 
 ## The goal
 
-Attest is a spec and reference implementation — the goal isn't adoption of this tool, it's adoption of the protocol. Imagine: your organisation runs Claude, ChatGPT, and a custom agent. All three emit Action Receipts in the same format. One audit trail, cryptographically signed, hash-chained, independently verifiable. Your compliance team can answer "what did our AI agents do?" without stitching together five different log formats.
+The protocol spec lives in [attest-protocol/spec](https://github.com/attest-protocol/spec); this repo is the reference implementation built on the TypeScript SDK. The goal isn't adoption of this tool, it's adoption of the protocol. Imagine: your organisation runs Claude, ChatGPT, and a custom agent. All three emit Action Receipts in the same format. One audit trail, cryptographically signed, hash-chained, independently verifiable. Your compliance team can answer "what did our AI agents do?" without stitching together five different log formats.
 
-Getting there requires the spec to be shaped by people with real-world experience in compliance, audit, and regulated AI deployment. The most valuable contributions right now aren't code — they're domain expertise. If you work in a regulated industry deploying AI agents, [open an issue](https://github.com/ojongerius/attest/issues) or comment on the [spec](docs/action-receipt-spec-v0.1.md).
+Getting there requires the spec to be shaped by people with real-world experience in compliance, audit, and regulated AI deployment. The most valuable contributions right now aren't code — they're domain expertise. If you work in a regulated industry deploying AI agents, [open an issue](https://github.com/ojongerius/attest/issues) or comment on the [spec](https://github.com/attest-protocol/spec).
 
 ## Action Taxonomy
 
@@ -68,9 +68,18 @@ Attest defines a hierarchical vocabulary of action types organized by domain (`f
 
 The taxonomy is extensible — implementations can add domain-specific types and override default risk levels via configuration.
 
+## Ecosystem
+
+| Repository | Description |
+|:---|:---|
+| [attest-protocol/spec](https://github.com/attest-protocol/spec) | Protocol specification, JSON Schemas, canonical taxonomy |
+| [attest-protocol/attest-ts](https://github.com/attest-protocol/attest-ts) | TypeScript SDK — receipt creation, signing, hashing, storage, taxonomy ([npm](https://www.npmjs.com/package/@attest-protocol/attest-ts)) |
+| **ojongerius/attest** (this repo) | MCP proxy + CLI — reference implementation built on the SDK |
+| [attest-protocol/attest-py](https://github.com/attest-protocol/attest-py) | Python SDK (planned) |
+
 ## Reference Implementation
 
-This repository contains a TypeScript reference implementation: an MCP proxy that sits between an MCP client and server, intercepting tool calls and emitting signed Action Receipts.
+This repository is the reference implementation: an MCP proxy and CLI built on [`@attest-protocol/attest-ts`](https://github.com/attest-protocol/attest-ts). The proxy sits between an MCP client and server, intercepting tool calls and emitting signed Action Receipts.
 
 ```
                          Attest Proxy
@@ -213,12 +222,12 @@ By action type:
 
 ```
 src/
-  receipt/      # Receipt creation, Ed25519 signing, RFC 8785 hashing, chain verification
-  store/        # SQLite persistence and chain integrity verification
-  taxonomy/     # Action type classification (15 types) + config file loading
   proxy/        # MCP STDIO proxy, tools/call interceptor, receipt emitter
-  cli/          # list, inspect, export, verify commands
+  cli/          # list, inspect, export, verify, stats commands
+  test-utils/   # Shared test factories
 ```
+
+Core receipt creation, signing, hashing, storage, and taxonomy classification live in the [`@attest-protocol/attest-ts`](https://github.com/attest-protocol/attest-ts) SDK.
 
 ## Roadmap
 
@@ -227,11 +236,11 @@ src/
 - Expand taxonomy to communication, documents, financial, and data domains
 - Multi-agent chain linking (delegation across agent boundaries)
 - Trusted timestamps (RFC 3161)
-- Formal standalone specification document
+- ~~Formal standalone specification document~~ → [attest-protocol/spec](https://github.com/attest-protocol/spec)
 
 ### Implementation
 
-**Core implementation complete** — see the [full spec](docs/action-receipt-spec-v0.1.md).
+**Core implementation complete** — see the [full spec](https://github.com/attest-protocol/spec).
 
 | | Milestone | Status |
 |:---|:---|:---|

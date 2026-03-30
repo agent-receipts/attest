@@ -1,6 +1,6 @@
 # Attest
 
-Cryptographically signed audit trail for AI agent actions. See `docs/action-receipt-spec-v0.1.md` for the full spec.
+MCP proxy and CLI for the Action Receipts protocol. Built on [`@attest-protocol/attest-ts`](https://github.com/attest-protocol/attest-ts). See [attest-protocol/spec](https://github.com/attest-protocol/spec) for the full spec.
 
 ## Toolchain
 
@@ -26,11 +26,12 @@ pnpm run test:watch   # vitest
 
 ```
 src/
-  receipt/      # receipt creation, signing, chain management
-  store/        # SQLite persistence
-  taxonomy/     # action type mapping + risk levels
-  proxy/        # MCP proxy emitter
+  proxy/        # MCP proxy emitter + interceptor
+  cli/          # list, inspect, export, verify, stats commands
+  test-utils/   # shared test factories
 ```
+
+Core SDK (receipt, store, taxonomy) lives in `@attest-protocol/attest-ts` — import from there, not local paths.
 
 ## Workflow
 
