@@ -32,6 +32,11 @@ const FILESYSTEM_ACTIONS: readonly ActionTypeEntry[] = [
 		risk_level: "low",
 	},
 	{
+		type: "filesystem.directory.list",
+		description: "List directory contents",
+		risk_level: "low",
+	},
+	{
 		type: "filesystem.directory.delete",
 		description: "Delete a directory",
 		risk_level: "high",
