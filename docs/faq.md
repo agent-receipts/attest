@@ -31,7 +31,7 @@ No. The protocol is **agent-agnostic**. It doesn't assume MCP, OpenAI function c
 
 ### What's in a receipt?
 
-Each receipt captures: what action was taken, who authorized it, which agent performed it, whether it succeeded, whether it can be undone, and a hash link to the previous receipt. Parameters are hashed for privacy — never stored in plaintext. See the [full spec](action-receipt-spec-v0.1.md) for schema details.
+Each receipt captures: what action was taken, who authorized it, which agent performed it, whether it succeeded, whether it can be undone, and a hash link to the previous receipt. Parameters are hashed for privacy — never stored in plaintext. See the [full spec](https://github.com/attest-protocol/spec) for schema details.
 
 ### What is hash chaining?
 

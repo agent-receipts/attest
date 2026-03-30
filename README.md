@@ -51,7 +51,7 @@ See the [full specification](https://github.com/attest-protocol/spec) for schema
 
 ## The goal
 
-Attest is a spec and reference implementation — the goal isn't adoption of this tool, it's adoption of the protocol. Imagine: your organisation runs Claude, ChatGPT, and a custom agent. All three emit Action Receipts in the same format. One audit trail, cryptographically signed, hash-chained, independently verifiable. Your compliance team can answer "what did our AI agents do?" without stitching together five different log formats.
+The protocol spec lives in [attest-protocol/spec](https://github.com/attest-protocol/spec); this repo is the reference implementation built on the TypeScript SDK. The goal isn't adoption of this tool, it's adoption of the protocol. Imagine: your organisation runs Claude, ChatGPT, and a custom agent. All three emit Action Receipts in the same format. One audit trail, cryptographically signed, hash-chained, independently verifiable. Your compliance team can answer "what did our AI agents do?" without stitching together five different log formats.
 
 Getting there requires the spec to be shaped by people with real-world experience in compliance, audit, and regulated AI deployment. The most valuable contributions right now aren't code — they're domain expertise. If you work in a regulated industry deploying AI agents, [open an issue](https://github.com/ojongerius/attest/issues) or comment on the [spec](https://github.com/attest-protocol/spec).
 
