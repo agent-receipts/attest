@@ -1,5 +1,7 @@
 <div align="center">
 
+> **ARCHIVED**: This repo has been superseded by [agent-receipts/mcp-proxy](https://github.com/agent-receipts/mcp-proxy) and [agent-receipts/sdk-go](https://github.com/agent-receipts/sdk-go). The protocol spec, TypeScript SDK, and Python SDK continue under the [agent-receipts](https://github.com/agent-receipts) org.
+
 # Attest
 
 ### Cryptographically signed audit trail for AI agent actions
